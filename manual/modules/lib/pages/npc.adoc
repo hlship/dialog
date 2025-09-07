@@ -81,37 +81,35 @@ Here's a character who moves around on a fixed schedule:
 
 [source]
 ----
-#alley
-(name *)	back alley
+#workshop
+(name *)	workshop
 (room *)
-(look *)
-		A suspicious-looking figure is lurking in the shadows.
+(look *)	You're in a noisy workshop.
+(from * go #east to #backroom)
 
-(on every tick in *)
-	(current player $Player)
-	(collect $Obj)
-		*($Obj is #heldby $Player)
-	(into $List)
-	%% The following rule fails (which is fine) if the list is empty.
-	(randomly select $Target from $List)
+#backroom
+(name *)	back room
+(room *)
+(look *)	Shelves line the walls in this dimly lit room.
+(from * go #west to #workshop)
 
-	(par)
-	The suspicious-looking figure eyes (the $Target) with interest.
+#mechanic
+(name *)	mechanic
+(female *)
+(appearance * $ $)
+			A busy-looking mechanic is here, looking busy.
+(* is #in #workshop)
 
-	(random from 1 to 5 into 1) %% Fails 4 times out of 5.
-	(now) ($Target is #heldby #thief)
-
-#thief
-(name *)	suspicious-looking figure
-(dict *)	suspicious looking thief
-(animate *)
-(* is #in #alley)
-(descr *)
-	(if) ($ is #heldby *) (then)
-		The figure seems to be carrying something.
-	(else)
-		Very suspicious-looking.
-	(endif)
+(on every tick)
+			(par)
+			(select)
+			(or)
+			(or)
+			(let * go #east)
+			(or)
+			(or)
+			(let * go #west)
+			(cycling)
 ----
 
 The caller of `(let $ go $)`—typically an `(on every tick)` rule,
